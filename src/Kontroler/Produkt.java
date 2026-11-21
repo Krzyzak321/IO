@@ -43,6 +43,9 @@ public class Produkt {
 	}
 
 	public Produkt(int aId, String aNazwa, double aCena, int aIlosc) {
-//		throw new UnsupportedOperationException();
+		this._idProduktu = aId;
+		this._nazwa = aNazwa;
+		this._cena = aCena;
+		this._stanMagazynowy = aIlosc;
 	}
 }

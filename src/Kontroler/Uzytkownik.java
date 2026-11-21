@@ -61,6 +61,8 @@ public class Uzytkownik {
 	}
 
 	public Uzytkownik(int aId, String aLogin, String aHaslo) {
-//		throw new UnsupportedOperationException();
+		this._id = aId;
+		this._login = aLogin;
+		this._haslo = aHaslo;
 	}
 }

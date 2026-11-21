@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="build">
+<project name="IO" basedir="." default="run">
+	<property name="classes.dir" value="classes"/>
 	<path id="build.classpath">
-		<pathelement location="classes"/>
+		<pathelement location="${classes.dir}"/>
 	</path>
-	<target name="init">
-		<mkdir dir="classes"/>
-	</target>
+
 	<target name="clean">
-		<delete dir="classes"/>
+		<delete dir="${classes.dir}"/>
 	</target>
-	<target depends="init" name="build">
-		<javac srcdir="." destdir="classes" source="1.4">
-			<classpath refid="build.classpath"/>
+
+	<target name="build">
+		<mkdir dir="${classes.dir}"/>
+		<javac srcdir=".." destdir="${classes.dir}" source="8" target="8" encoding="UTF-8" includeantruntime="false">
+			<include name="Kontroler/**/*.java"/>
 		</javac>
+	</target>
+
+	<target name="run" depends="build">
+		<java classname="Kontroler.Main" classpathref="build.classpath" fork="true"/>
 	</target>
 </project>
