@@ -6,12 +6,12 @@ import java.util.List;
 public class EncjaFasada implements IProdukt, IZamowienie, IKoszyk {
 	private final IFabrykaEncji _fabryka;
 	private final IDAO _dao;
-	private final KoszykSklepu _koszyk;
+	private final Koszyk _koszyk;
 	private Zamowienie _aktywneZamowienie;
 
 	public EncjaFasada(IDAO dao, IFabrykaEncji fabryka) {
 		if (dao == null || fabryka == null) throw new IllegalArgumentException("DAO i fabryka są wymagane");
-		this._dao = dao; this._fabryka = fabryka; this._koszyk = new KoszykSklepu();
+		this._dao = dao; this._fabryka = fabryka; this._koszyk = new Koszyk();
 	}
 	public int zapiszZamowienie(Zamowienie z) {
 		if (z == null) throw new IllegalArgumentException("Zamówienie nie może być puste");
@@ -25,10 +25,10 @@ public class EncjaFasada implements IProdukt, IZamowienie, IKoszyk {
 		if (ilosc <= 0) throw new IllegalArgumentException("Ilość musi być większa od zera");
 		Produkt p = pobierzProdukt(id); if (p == null) throw new IllegalArgumentException("Nie znaleziono produktu: " + id);
 		if (!czyDostepny(id, ilosc)) throw new IllegalArgumentException("Brak wymaganej ilości w magazynie");
-		_koszyk.dodaj(p, ilosc);
+		_koszyk.dodajProdukt(p, ilosc);
 	}
 	public Produkt[] pobierzZawartosc() { List<Produkt> out = new ArrayList<Produkt>(); for (PozycjaZamowienia p : _koszyk.getPozycje()) out.add(p.getProdukt()); return out.toArray(new Produkt[out.size()]); }
-	public void usunProdukt(int id) { _koszyk.usun(id); }
+	public void usunProdukt(int id) { _koszyk.usunProdukt(id); }
 	public void wyczysc() { _koszyk.wyczysc(); }
 	public double obliczLacznaCene() { double suma = 0; for (PozycjaZamowienia p : _koszyk.getPozycje()) suma += p.getCenaZakupu() * p.getIlosc(); return suma; }
 	public Produkt[] pobierzWszystkie() { return _dao.pobierzWszystkieProdukty(); }

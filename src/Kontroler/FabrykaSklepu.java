@@ -8,6 +8,6 @@ public class FabrykaSklepu implements IFabrykaEncji {
 	public Produkt utworzProdukt(String nazwa, double cena) { return new Produkt(nextProductId++, nazwa, cena, 0); }
 	public Zamowienie utworzZamowienie() { Zamowienie z = new Zamowienie(); z.setId(nextOrderId++); return z; }
 	public Uzytkownik utworzUzytkownika(String login, String haslo) { return new Uzytkownik(nextUserId++, login, haslo); }
-	public Koszyk utworzKoszyk() { return new KoszykSklepu(); }
+	public Koszyk utworzKoszyk() { return new Koszyk(); }
 	public PozycjaZamowienia utworzPozycjeZamowienia(Produkt produkt, int ilosc) { return new PozycjaZamowienia(produkt, ilosc); }
 }
