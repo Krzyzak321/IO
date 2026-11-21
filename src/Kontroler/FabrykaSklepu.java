@@ -1,26 +1,29 @@
 package Kontroler;
 
-
-
 public class FabrykaSklepu implements IFabrykaEncji {
+	private static int nastIdProduktu = 1;
+	private static int nastIdZamowienia = 1;
+	private static int nastIdUzytkownika = 1;
 
 	public Produkt utworzProdukt(String aNazwa, double aCena) {
-		throw new UnsupportedOperationException();
+		return new Produkt(nastIdProduktu++, aNazwa, aCena, 0);
 	}
 
 	public Zamowienie utworzZamowienie() {
-		throw new UnsupportedOperationException();
+		Zamowienie zamowienie = new Zamowienie();
+		zamowienie.setId(nastIdZamowienia++);
+		return zamowienie;
 	}
 
 	public Uzytkownik utworzUzytkownika(String aLogin, String aHaslo) {
-		throw new UnsupportedOperationException();
+		return new Uzytkownik(nastIdUzytkownika++, aLogin, aHaslo);
 	}
 
 	public Koszyk utworzKoszyk() {
-		throw new UnsupportedOperationException();
+		return new Koszyk();
 	}
 
 	public PozycjaZamowienia utworzPozycjeZamowienia(Produkt aProdukt, int aIlosc) {
-		throw new UnsupportedOperationException();
+		return new PozycjaZamowienia(aProdukt, aIlosc);
 	}
 }

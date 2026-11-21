@@ -5,18 +5,27 @@ public class KontrolerGoscia implements IKontrolerGoscia {
 	public IStrategiaFiltrowania _strategia;
 
 	public KontrolerGoscia(IProdukt aProdukt) {
-		throw new UnsupportedOperationException();
+		this._produkt = aProdukt;
 	}
 
 	public void zarejestruj() {
-		throw new UnsupportedOperationException();
+		System.out.println("Rejestracja gościa.");
 	}
 
 	public void zaloguj(String aLogin, String aHaslo) {
-		throw new UnsupportedOperationException();
+		if (aLogin == null || aLogin.trim().isEmpty() || aHaslo == null || aHaslo.isEmpty()) {
+			throw new IllegalArgumentException("Podaj login i hasło");
+		}
+		System.out.println("Zalogowano: " + aLogin);
 	}
 
 	public void przegladajOferte() {
-		throw new UnsupportedOperationException();
+		if (_produkt == null) return;
+		Produkt[] produkty = _produkt.pobierzWszystkie();
+		if (produkty != null) {
+			for (Produkt produkt : produkty) {
+				System.out.println(produkt.getNazwa() + " - " + produkt.getCena() + " zł");
+			}
+		}
 	}
 }
