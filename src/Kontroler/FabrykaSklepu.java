@@ -1,29 +1,13 @@
 package Kontroler;
 
-
 public class FabrykaSklepu implements IFabrykaEncji {
-
-	public Produkt utworzProdukt(String aNazwa, double aCena) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Zamowienie utworzZamowienie() {
-		throw new UnsupportedOperationException();
-	}
-
-	public Uzytkownik utworzUzytkownika(String aLogin, String aHaslo) {
-		throw new UnsupportedOperationException();
-	}
-
-	public Koszyk utworzKoszyk() {
-		throw new UnsupportedOperationException();
-	}
-
-	public PozycjaZamowienia utworzPozycjeZamowienia(Produkt aProdukt, int aIlosc) {
-		throw new UnsupportedOperationException();
-	}
-
-	public FabrykaSklepu() {
-		throw new UnsupportedOperationException();
-	}
+	private int nextProductId = 1;
+	private int nextOrderId = 1;
+	private int nextUserId = 1;
+	public FabrykaSklepu() { }
+	public Produkt utworzProdukt(String nazwa, double cena) { return new Produkt(nextProductId++, nazwa, cena, 0); }
+	public Zamowienie utworzZamowienie() { Zamowienie z = new Zamowienie(); z.setId(nextOrderId++); return z; }
+	public Uzytkownik utworzUzytkownika(String login, String haslo) { return new Uzytkownik(nextUserId++, login, haslo); }
+	public Koszyk utworzKoszyk() { return new KoszykSklepu(); }
+	public PozycjaZamowienia utworzPozycjeZamowienia(Produkt produkt, int ilosc) { return new PozycjaZamowienia(produkt, ilosc); }
 }
