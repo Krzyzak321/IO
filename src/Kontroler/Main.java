@@ -1,37 +1,49 @@
 package Kontroler;
 
-
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("=== URUCHOMIENIE SYSTEMU SKLEPU ROWEROWEGO ===");
 
-        // --- KROK 1: Przygotowanie danych testowych ---
-        // Tworzymy obiekty (zakładam, że masz konstruktory w klasach encji)
-        Produkt testowyProdukt = new Produkt(1, "Opona 29x2.25", 120.50, 10);
-        Uzytkownik testowyKlient = new Uzytkownik(1, "jan_kowalski", "haslo123");
-        System.out.println("Przygotowano dane testowe: " + testowyProdukt.getNazwa() + ", Klient: " + testowyKlient.getLogin());
-
-        // --- KROK 2: Przygotowanie klas i obiektów tworzących oprogramowanie ---
-        // Tworzymy instancje klas z warstwy Model (baza, fabryka, fasada)
+        // --- KROK 1: Przygotowanie danych testowych (przez Fabrykę i DAO) ---
         IDAO dao = new DAO();
         IFabrykaEncji fabryka = new FabrykaSklepu();
 
-        // Tworzymy Fasadę modelu (przekazujemy DAO i Fabrykę)
         EncjaFasada fasadaModelu = new EncjaFasada(dao, fabryka);
 
-        // Tworzymy Kontroler (przekazujemy Fasadę modelu)
+        Produkt testowyProdukt = fabryka.utworzProdukt("Opona 29x2.25", 120.50);
+        Uzytkownik testowyKlient = fabryka.utworzUzytkownika("jan_kowalski", "haslo123");
+
+        // Zapisujemy produkt w DAO (na wypadek gdyby utworzProdukt go tam nie dodawał)
+        if (dao.pobierzProdukt(testowyProdukt.getIdProduktu()) == null) {
+            dao.zapiszProdukt(testowyProdukt);
+        }
+
+        System.out.println("Przygotowano dane testowe: " + testowyProdukt.getNazwa()
+                + " (ID: " + testowyProdukt.getIdProduktu() + ", cena: " + testowyProdukt.getCena() + ")"
+                + ", Klient: " + testowyKlient.getLogin());
+
+        // --- KROK 2: Przygotowanie Kontrolera ---
         KontrolerKlienta kontrolerKlienta = new KontrolerKlienta(fasadaModelu);
 
-        // --- KROK 3: Testowe wykonanie operacji przypadku użycia ---
+        // --- KROK 3: Symulacja dodania produktu do koszyka i test Koszyk/EncjaFasada ---
+        System.out.println("\n--- Dodawanie produktu do koszyka ---");
+        fasadaModelu.dodajProdukt(testowyProdukt.getIdProduktu(), 2); // Dodajemy 2 sztuki
+
+        Produkt[] zawartosc = fasadaModelu.pobierzZawartosc();
+        System.out.println("Liczba sztuk w koszyku: " + zawartosc.length);
+        for (int i = 0; i < zawartosc.length; i++) {
+            System.out.println("  [" + (i + 1) + "] " + zawartosc[i].getNazwa() + " - " + zawartosc[i].getCena());
+        }
+        System.out.println("Łączna cena z koszyka: " + fasadaModelu.obliczLacznaCene());
+
+        // --- KROK 4: Testowe wykonanie operacji przypadku użycia (PU05) ---
         System.out.println("\n--- Rozpoczynam testowe składanie zamówienia (PU05) ---");
         try {
-            // Wywołujemy metodę z Fasady Kontrolera
             kontrolerKlienta.zlozZamowienie();
-
-            System.out.println("Metoda zakończona (jeśli nie ma wyjątku, to dobrze).");
+            System.out.println("Zamówienie złożone pomyślnie!");
         } catch (UnsupportedOperationException e) {
-            // --- KROK 4: Obsługa wyjątku i wyświetlenie wyniku ---
+            // --- KROK 5: Obsługa wyjątku i wyświetlenie wyniku ---
             System.out.println("Przechwycono wyjątek: Funkcjonalność niezaimplementowana w tym etapie.");
             System.out.println("Szczegóły: " + e.getMessage());
         } catch (Exception e) {

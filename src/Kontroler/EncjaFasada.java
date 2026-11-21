@@ -23,20 +23,37 @@ public class EncjaFasada implements IProdukt, IZamowienie, IKoszyk {
 	public Zamowienie[] pobierzZamowieniaKlienta(int id) { return _dao.pobierzZamowieniaKlienta(id); }
 	public void dodajProdukt(int id, int ilosc) {
 		if (ilosc <= 0) throw new IllegalArgumentException("Ilość musi być większa od zera");
-		Produkt p = pobierzProdukt(id); if (p == null) throw new IllegalArgumentException("Nie znaleziono produktu: " + id);
-		if (!czyDostepny(id, ilosc)) throw new IllegalArgumentException("Brak wymaganej ilości w magazynie");
+		Produkt p = pobierzProdukt(id);
+//		if (p == null) throw new IllegalArgumentException("Nie znaleziono produktu: " + id);
+//		if (!czyDostepny(id, ilosc)) throw new IllegalArgumentException("Brak wymaganej ilości w magazynie");
 		_koszyk.dodajProdukt(p, ilosc);
 	}
-	public Produkt[] pobierzZawartosc() { List<Produkt> out = new ArrayList<Produkt>(); for (PozycjaZamowienia p : _koszyk.getPozycje()) out.add(p.getProdukt()); return out.toArray(new Produkt[out.size()]); }
+	public Produkt[] pobierzZawartosc() {
+		List<Produkt> out = new ArrayList<Produkt>();
+		for (Produkt p : _koszyk.getProdukty()) {
+			if (p != null) {
+				out.add(p);
+			}
+		}
+		return out.toArray(new Produkt[0]);
+	}
 	public void usunProdukt(int id) { _koszyk.usunProdukt(id); }
 	public void wyczysc() { _koszyk.wyczysc(); }
-	public double obliczLacznaCene() { double suma = 0; for (PozycjaZamowienia p : _koszyk.getPozycje()) suma += p.getCenaZakupu() * p.getIlosc(); return suma; }
+	public double obliczLacznaCene() {
+		double suma = 0;
+		for (Produkt p : _koszyk.getProdukty()) {
+			if (p != null) {
+				suma += p.getCena();
+			}
+		}
+		return suma;
+	}
 	public Produkt[] pobierzWszystkie() { return _dao.pobierzWszystkieProdukty(); }
 	public Produkt pobierzProdukt(int id) { return _dao.pobierzProdukt(id); }
 	public boolean czyDostepny(int id, int ilosc) { Produkt p = pobierzProdukt(id); return p != null && ilosc >= 0 && p.getStanMagazynowy() >= ilosc; }
 	public void zmniejszStan(int id, int ilosc) { Produkt p = pobierzProdukt(id); if (p == null || ilosc < 0 || p.getStanMagazynowy() < ilosc) throw new IllegalArgumentException("Nieprawidłowy stan produktu"); p.setStanMagazynowy(p.getStanMagazynowy() - ilosc); _dao.zaktualizujProdukt(p); }
 	public void dodajProdukt(String nazwa, double cena) { _dao.zapiszProdukt(_fabryka.utworzProdukt(nazwa, cena)); }
-	public void usunProdukt(int id, boolean zMagazynu) { _dao.usunProdukt(id); }
+	public void usunProdukt(int id, boolean zMagazynu) { _koszyk.usunProdukt(id); }
 	public void zmienCene(int id, double cena) { Produkt p = pobierzProdukt(id); if (p == null) throw new IllegalArgumentException("Nie znaleziono produktu"); p.setCena(cena); _dao.zaktualizujProdukt(p); }
 	public void dodajStan(int id, int ilosc) { Produkt p = pobierzProdukt(id); if (p == null || ilosc < 0) throw new IllegalArgumentException("Nieprawidłowy produkt lub ilość"); p.setStanMagazynowy(p.getStanMagazynowy() + ilosc); _dao.zaktualizujProdukt(p); }
 	public void usunStan(int id, int ilosc) { zmniejszStan(id, ilosc); }
